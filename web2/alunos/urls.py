@@ -1,6 +1,9 @@
+
 from django.urls import path
-from . import views
+from .views import ProfessorView, ProfessorReadUpdateDeleteView
 
 urlpatterns = [
-    path("", views.index, name="index")
+    path('professor/', ProfessorView.as_view()),
+    path('professor/<int:pk>/', ProfessorReadUpdateDeleteView.as_view(), name='professor-detail'),
+
 ]
