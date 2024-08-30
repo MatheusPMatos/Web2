@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from .models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from .serializer import UserSerializer
+from rest_framework import status
 
 
 class UserView():
@@ -10,19 +12,19 @@ class UserView():
         if user_id is None:
             # Sem ID, retorna todos os usuários
             users = User.objects.all()
-            serializer = Userserializer(users, many=True)
+            serializer = UserSerializer(users, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             try:
                 # Com ID, retorna um usuário específico
                 user = User.objects.get(pk=user_id)
-                serializer = Userserializer(user)
+                serializer = UserSerializer(user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except User.DoesNotExist:
                 return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
             
     def post(self, request):
-        serializer = userSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,  satus=status.HTTP_200_OK)
@@ -37,7 +39,7 @@ class UserView():
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
     
-        serializer = userSerializer(user, data=request.data, partial=True)
+        serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
