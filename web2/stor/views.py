@@ -7,7 +7,7 @@ from .serializer import UserSerializer
 from rest_framework import status
 
 
-class UserView():
+class UserView(APIView):
     def get(self, request, user_id=None):
         if user_id is None:
             # Sem ID, retorna todos os usuários
