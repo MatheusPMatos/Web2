@@ -1,0 +1,4 @@
+
+user
+get set, delete
+get/id get all
