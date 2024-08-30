@@ -44,7 +44,7 @@ class ProductSchuedule(models.Model):
 class Rent(models.Model):
     
     RentTime = models.TimeField()
-    User = models.ForeignKey(User)
+    User = models.ForeignKey(User, on_delete=models.CASCADE)
     ProductSchuedule = models.ForeignKey(ProductSchuedule, on_delete=models.CASCADE)
 
 
@@ -64,7 +64,7 @@ class PaymentMethod(IntEnum):
 class Payment(models.Model):
     
     Time = models.TimeField()
-    method = models.CharField(choices=PaymentMethod.choices())
+    method = models.IntegerField(choices=PaymentMethod.choices())
     Rest= models.ForeignKey(Rent, on_delete=models.CASCADE)
     
     
