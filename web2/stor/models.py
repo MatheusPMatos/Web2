@@ -19,18 +19,8 @@ class Products(models.Model):
     active = models.BooleanField(default=True)
     productType = models.IntegerField()
     
-    
-    
-class ProductSchuedule(models.Model):
-    
-    WeekDay = models.IntegerField()
-    InitialTime = models.TimeField()
-    FinalTime = models.TimeField()
-    Product = models.ForeignKey(Products)
-    Type = models.IntegerField()
-    
+
 class ProductType(IntEnum):
-    
     Quadra = 1
     Societ = 2
     Tenis = 3
@@ -41,20 +31,23 @@ class ProductType(IntEnum):
     def choices(cls):
         return [(key.value, key.name) for key in cls]
     
+class ProductSchuedule(models.Model):
+    
+    WeekDay = models.IntegerField()
+    InitialTime = models.TimeField()
+    FinalTime = models.TimeField()
+    Product = models.ForeignKey(Products)
+    Type = models.IntegerField(choices=ProductType.choices(), default=ProductType.Quadra)
+    
+
+    
 class Rent(models.Model):
     
     RentTime = models.TimeField()
     User = models.ForeignKey(User)
     ProductSchuedule = models.ForeignKey(ProductSchuedule)
-    
 
-class Payment(models.Model):
-    
-    Time = models.TimeField()
-    method = models.CharField()
-    Rest= models.ForeignKey(Rent)
-    
-    
+
 class PaymentMethod(IntEnum):
     
     Money = 1
@@ -66,3 +59,12 @@ class PaymentMethod(IntEnum):
     def choices(cls):
         return [(key.value, key.name) for key in cls]
 
+ 
+
+class Payment(models.Model):
+    
+    Time = models.TimeField()
+    method = models.CharField(choices=PaymentMethod.choices())
+    Rest= models.ForeignKey(Rent)
+    
+    
