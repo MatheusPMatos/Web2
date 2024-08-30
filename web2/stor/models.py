@@ -36,7 +36,7 @@ class ProductSchuedule(models.Model):
     WeekDay = models.IntegerField()
     InitialTime = models.TimeField()
     FinalTime = models.TimeField()
-    Product = models.ForeignKey(Products)
+    Product = models.ForeignKey(Products, on_delete=models.CASCADE)
     Type = models.IntegerField(choices=ProductType.choices(), default=ProductType.Quadra)
     
 
@@ -45,7 +45,7 @@ class Rent(models.Model):
     
     RentTime = models.TimeField()
     User = models.ForeignKey(User)
-    ProductSchuedule = models.ForeignKey(ProductSchuedule)
+    ProductSchuedule = models.ForeignKey(ProductSchuedule, on_delete=models.CASCADE)
 
 
 class PaymentMethod(IntEnum):
@@ -65,6 +65,6 @@ class Payment(models.Model):
     
     Time = models.TimeField()
     method = models.CharField(choices=PaymentMethod.choices())
-    Rest= models.ForeignKey(Rent)
+    Rest= models.ForeignKey(Rent, on_delete=models.CASCADE)
     
     

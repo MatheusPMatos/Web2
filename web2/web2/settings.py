@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rest_framework',
+    'stor.apps.StorConfig',
     'alunos.apps.AlunosConfig',
     'django.contrib.admin',
     'django.contrib.auth',
