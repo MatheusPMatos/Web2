@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from serializer import UserSerializer
 
 class UserView():
     def get(self, request):
@@ -12,7 +12,7 @@ class UserView():
         return Response(serializer.data, satus=status.HTTP_200_OK)
     
     def post(self, request):
-        serializer = userSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,  satus=status.HTTP_200_OK)

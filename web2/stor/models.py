@@ -1,4 +1,5 @@
 from django.db import models
+from enum import IntEnum
 
 # Create your models here.
 class User(models.Model):
@@ -12,8 +13,11 @@ class User(models.Model):
         return self.name
     
 class Products(models.Model):
+    
     name = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
     active = models.BooleanField(default=True)
+    productType = models.IntegerField()
     
     
     
@@ -22,8 +26,20 @@ class ProductSchuedule(models.Model):
     WeekDay = models.IntegerField()
     InitialTime = models.TimeField()
     FinalTime = models.TimeField()
-    Product = models.ForeignKey(Products)    
-
+    Product = models.ForeignKey(Products)
+    Type = models.IntegerField()
+    
+class ProductType(IntEnum):
+    
+    Quadra = 1
+    Societ = 2
+    Tenis = 3
+    Volei = 4
+    Voleiareia =5
+    
+    @classmethod
+    def choices(cls):
+        return [(key.value, key.name) for key in cls]
     
 class Rent(models.Model):
     
@@ -32,5 +48,21 @@ class Rent(models.Model):
     ProductSchuedule = models.ForeignKey(ProductSchuedule)
     
 
+class Payment(models.Model):
+    
+    Time = models.TimeField()
+    method = models.CharField()
+    Rest= models.ForeignKey(Rent)
     
     
+class PaymentMethod(IntEnum):
+    
+    Money = 1
+    Pix = 2
+    CreditCard = 3
+    DebitCard = 4
+    
+    @classmethod
+    def choices(cls):
+        return [(key.value, key.name) for key in cls]
+
