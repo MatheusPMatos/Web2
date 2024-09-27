@@ -25,3 +25,7 @@ class Matricula(models.Model):
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
     disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE)
     periodo = models.IntegerField(null=True)
+
+class ConteudoProgramatico(models.Model):
+    disciplina = models.ForeignKey(Disciplina, on_delete=models.CASCADE, related_name='conteudos_programaticos')
+    descricao = models.TextField(null=True)
