@@ -20,7 +20,7 @@ class ProductsCreateUpdateSerializer(serializers.ModelSerializer):
         
     def create(self, validated_data):
          user_id = validated_data.pop('user_id')
-         user = User.objects.get(id=user_id)
+         user = User.objects.get(pk=user_id)
          product = Products.objects.create(user=user, **validated_data) 
          create_schedule(product=product)
     
