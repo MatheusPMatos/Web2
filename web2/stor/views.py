@@ -7,7 +7,7 @@ from rest_framework import status
 
 
 class UserView(APIView):
-    def get(self, request, user_id=None):
+    def get(self, request):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -19,8 +19,7 @@ class UserView(APIView):
             return Response(serializer.data,  status=status.HTTP_200_OK)
         return Response({"detail": "Invalid User."}, status=status.HTTP_400_BAD_REQUEST)
     
-    def put(self, request, user_id=None):
-    
+    def put(self, request):
         serializer = UserSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -48,7 +47,6 @@ class UserByIdView(APIView):
     def delete(self, request, user_id=None):
         if user_id is None:
             return Response({"detail": "User ID is required for deletion."}, status=status.HTTP_400_BAD_REQUEST)
-    
         try:
             user = User.objects.get(pk=user_id)
             user.delete()
@@ -61,7 +59,6 @@ class ProductView(APIView):
         prods = Products.objects.all()
         serializer = ProductsSerializer(prods, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-            
             
     def post(self, request):
         serializer = ProductsCreateUpdateSerializer(data=request.data)
@@ -78,8 +75,6 @@ class ProductView(APIView):
             return Response(serializer.data,  status=status.HTTP_200_OK)
         
         return Response({"detail": "INvalid product."}, status=status.HTTP_400_BAD_REQUEST)
-
-
 class ProductByIdView(APIView):
     def get(self, request, prod_id=None):
         if prod_id is None:
