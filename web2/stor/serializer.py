@@ -15,11 +15,13 @@ class ProductsSerializer(serializers.ModelSerializer):
 class ProductsCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
-        fields = ['id','name', 'description', 'active', 'productType', 'price']
+        fields = ['id','name', 'description', 'active', 'productType', 'price', 'user_id']
         read_only_fields = ['id']
         
     def create(self, validated_data):
-         product = Products.objects.create(**validated_data)
+         user_id = validated_data.pop('user_id')
+         user = User.objects.get(id=user_id)
+         product = Products.objects.create(user=user, **validated_data) 
          create_schedule(product=product)
     
 

@@ -38,6 +38,7 @@ class Products(models.Model):
     active = models.BooleanField(default=True)
     productType = models.IntegerField(choices=ProductType.choices(), default=ProductType.Quadra)
     price = models.FloatField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
 class ProductSchedule(models.Model):
 
