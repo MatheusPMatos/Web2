@@ -1,23 +1,27 @@
 from django.shortcuts import render
-from .models import User,Products
+from .models import Profile,Products
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializer import UserSerializer, ProductsSerializer, ProductsCreateUpdateSerializer
 from rest_framework import status
+from rest_framework.permissions import AllowAny 
 
 
 class UserView(APIView):
+    permission_classes = [AllowAny] # Permite acesso público a este endpoint
+
     def get(self, request):
-        users = User.objects.all()
+        users = Profile.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
             
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,  status=status.HTTP_200_OK)
-        return Response({"detail": "Invalid User."}, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save()  
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
     def put(self, request):
         serializer = UserSerializer(data=request.data, partial=True)
@@ -32,26 +36,26 @@ class UserView(APIView):
 class UserByIdView(APIView):
     def get(self, request, user_id=None):
         if user_id is None:
-            users = User.objects.all(pk=user_id)
+            users = Profile.objects.all(pk=user_id)
             serializer = UserSerializer(users, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             try:
                 # Com ID, retorna um usuário específico
-                user = User.objects.get(pk=user_id)
+                user = Profile.objects.get(pk=user_id)
                 serializer = UserSerializer(user)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-            except User.DoesNotExist:
+            except Profile.DoesNotExist:
                 return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
             
     def delete(self, request, user_id=None):
         if user_id is None:
             return Response({"detail": "User ID is required for deletion."}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = User.objects.get(pk=user_id)
+            user = Profile.objects.get(pk=user_id)
             user.delete()
             return Response({"detail": "User deleted successfully."}, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
+        except Profile.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class ProductView(APIView):

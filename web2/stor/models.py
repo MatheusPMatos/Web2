@@ -9,7 +9,7 @@ class UserType(IntEnum):
     @classmethod
     def choices(cls):
         return [(key.value, key.name) for key in cls]
-class User(models.Model):
+class Profile(models.Model):
     name = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
@@ -38,7 +38,7 @@ class Products(models.Model):
     active = models.BooleanField(default=True)
     productType = models.IntegerField(choices=ProductType.choices(), default=ProductType.Quadra)
     price = models.FloatField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     
 class ProductSchedule(models.Model):
 
@@ -51,7 +51,7 @@ class ProductSchedule(models.Model):
 class Rent(models.Model):
     
     rentTime = models.TimeField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     productSchuedule = models.ForeignKey(ProductSchedule, on_delete=models.CASCADE)
     isPaid = models.BooleanField(default=False)
 

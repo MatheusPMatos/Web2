@@ -1,12 +1,21 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import User, Products, ProductSchedule
+from .models import Products, ProductSchedule
 from datetime import datetime, timedelta
 import pytz
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['id','username', 'email', 'password']
+        
+    def create(self, validated_data):
+        User = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email',''),
+            password=validated_data['password']
+        )
+        return User
 class ProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
