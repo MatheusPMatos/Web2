@@ -1,7 +1,22 @@
 from django.db import models
 from enum import IntEnum
-
+from django.contrib.auth.models import User
 # Create your models here.
+
+class Professor(models.Model):
+# Relaciona cada instância de Professor a exatamente uma instância de User.
+# O parâmetro related_name='professor_profile' permite acessar informações de professor a partir do usuário com user.professor_profile.
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='professor_profile')
+
+
+    curriculo = models.CharField(max_length=150, blank=True, null=True)
+
+
+# atributos abaixo ja existem em user
+#    nome = models.CharField(max_length=200)
+#    email = models.CharField(max_length=200)
+    def __str__(self):
+        return self.user.get_full_name() or self.user.username
 class UserType(IntEnum):
     Vendedor = 1
     Comprador = 2
