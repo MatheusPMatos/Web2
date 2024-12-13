@@ -5,11 +5,16 @@ from rest_framework.response import Response
 from .serializer import UserSerializer, ProductsSerializer, ProductsCreateUpdateSerializer
 from rest_framework import status
 from rest_framework.permissions import AllowAny 
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 class UserView(APIView):
-    permission_classes = [AllowAny] # Permite acesso público a este endpoint
+    permission_classes = [IsAuthenticated]  # Apenas usuários autenticados podem acessar
+    authentication_classes = [TokenAuthentication]  # Usando Token Authentication
 
+    permission_classes = [AllowAny] # Permite acesso público a este endpoint
     def get(self, request):
         users = Profile.objects.all()
         serializer = UserSerializer(users, many=True)
@@ -31,7 +36,14 @@ class UserView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-
+class UserRegisterAPIView(APIView):
+    permission_classes = [AllowAny] # Permite acesso público a este endpoint
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()  
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserByIdView(APIView):
     def get(self, request, user_id=None):
@@ -57,6 +69,16 @@ class UserByIdView(APIView):
             return Response({"detail": "User deleted successfully."}, status=status.HTTP_200_OK)
         except Profile.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+class UserRegisterAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            # Cria o token para o novo usuário
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({"user": serializer.data, "token": token.key}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductView(APIView):
     def get(self, request, ):
@@ -100,3 +122,10 @@ class ProductByIdView(APIView):
             return Response({"detail": "product deleted successfully."}, status=status.HTTP_200_OK)
         except Products.DoesNotExist:
             return Response({"detail": "product not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+class UserProductsView(APIView):
+    def get(self, request, user_id):
+        # Filtra as quadras do usuário
+        products = Products.objects.filter(user_id=user_id)
+        serializer = ProductsSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

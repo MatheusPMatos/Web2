@@ -57,7 +57,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Requer autenticação para acessar endpoints
+        'rest_framework.permissions.IsAuthenticated', 
     ],
 }
 
